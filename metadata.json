@@ -1,0 +1,5 @@
+{
+    "name": "Axiom Pulse Replica",
+    "description": "A high-performance, pixel-perfect replica of the Axiom Trade Pulse dashboard featuring real-time updates, Redux state management, and atomic component architecture.",
+    "requestFramePermissions": []
+}

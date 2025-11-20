@@ -1,0 +1,75 @@
+import React from 'react';
+import { Search, Wallet, Settings, Bell, Menu, Copy, User } from 'lucide-react';
+
+export const Header: React.FC = () => {
+    return (
+        <header className="sticky top-0 z-50 flex h-14 w-full items-center justify-between border-b border-zinc-800 bg-black px-4">
+            <div className="flex items-center gap-8">
+                <a href="#" className="flex items-center gap-2 font-bold text-xl tracking-tight text-white">
+                    <div className="h-6 w-6 bg-white rounded-sm flex items-center justify-center relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-blue-600 to-cyan-400 opacity-100"></div>
+                        <div className="w-0 h-0 border-l-[4px] border-l-transparent border-b-[6px] border-b-white border-r-[4px] border-r-transparent relative z-10 mb-0.5"></div>
+                    </div>
+                    <span className="hidden md:inline">AXIOM<span className="text-zinc-500 font-normal ml-1 text-sm">Pro</span></span>
+                </a>
+                <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium text-zinc-400">
+                    <a href="#" className="hover:text-white transition-colors">Discover</a>
+                    <a href="#" className="text-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.5)]">Pulse</a>
+                    <a href="#" className="hover:text-white transition-colors">Trackers</a>
+                    <a href="#" className="hover:text-white transition-colors">Perpetuals</a>
+                    <a href="#" className="hover:text-white transition-colors">Yield</a>
+                    <a href="#" className="hover:text-white transition-colors">Vision</a>
+                    <a href="#" className="hover:text-white transition-colors">Portfolio</a>
+                    <a href="#" className="hover:text-white transition-colors">Rewards</a>
+                </nav>
+            </div>
+
+            <div className="flex items-center gap-3">
+                <div className="relative hidden md:block group">
+                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-zinc-500 group-focus-within:text-zinc-300 transition-colors" />
+                    <input
+                        type="text"
+                        placeholder="Search by token or CA..."
+                        className="h-9 w-80 rounded-full border border-zinc-800 bg-[#0c0c0e] pl-10 pr-10 text-sm text-zinc-200 outline-none focus:border-zinc-700 transition-colors placeholder:text-zinc-600"
+                    />
+                    <span className="absolute right-3 top-2.5 text-[10px] text-zinc-500 border border-zinc-800 px-1.5 rounded bg-zinc-900/50">/</span>
+                </div>
+
+                {/* Mobile Search Icon */}
+                <button className="md:hidden p-2 text-zinc-400">
+                    <Search size={20} />
+                </button>
+
+                {/* SOL Dropdown */}
+                <button className="hidden md:flex items-center gap-2 rounded-lg border border-zinc-800 bg-[#0c0c0e] px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-900 transition-colors">
+                    <img src="/solana-logo.svg" alt="SOL" className="h-4 w-4" />
+                    <span>SOL</span>
+                </button>
+
+                <button className="hidden md:flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-1.5 text-sm font-bold text-white hover:bg-blue-500 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)]">
+                    Deposit
+                </button>
+
+                {/* Mobile Paste CA Button */}
+                <button className="md:hidden flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 rounded-full px-3 py-1.5 text-xs font-medium text-zinc-300">
+                    <Copy size={12} />
+                    <span>Paste CA</span>
+                </button>
+
+                <div className="flex items-center gap-1">
+                    <button className="hidden md:block p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
+                        <Settings size={18} />
+                    </button>
+                    <button className="hidden md:block p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors relative">
+                        <Bell size={18} />
+                        <span className="absolute top-2 right-2 h-1.5 w-1.5 bg-blue-500 rounded-full"></span>
+                    </button>
+                    <button className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
+                        <Menu size={20} className="md:hidden" />
+                        <User size={18} className="hidden md:block" />
+                    </button>
+                </div>
+            </div>
+        </header>
+    );
+};
