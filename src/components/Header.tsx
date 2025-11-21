@@ -1,26 +1,26 @@
 import React from 'react';
-import { Search, Wallet, Settings, Bell, Menu, Copy, User } from 'lucide-react';
+import { Search, Wallet, Settings, Bell, Menu, Copy, User, ChevronDown, Star, CircleDollarSign } from 'lucide-react';
+import Link from 'next/link'
+import Image from 'next/image'
+
 
 export const Header: React.FC = () => {
     return (
         <header className="sticky top-0 z-50 flex h-14 w-full items-center justify-between border-b border-zinc-800 bg-black px-4">
             <div className="flex items-center gap-8">
-                <a href="#" className="flex items-center gap-2 font-bold text-xl tracking-tight text-white">
-                    <div className="h-6 w-6 bg-white rounded-sm flex items-center justify-center relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-blue-600 to-cyan-400 opacity-100"></div>
-                        <div className="w-0 h-0 border-l-[4px] border-l-transparent border-b-[6px] border-b-white border-r-[4px] border-r-transparent relative z-10 mb-0.5"></div>
-                    </div>
+                <Link href="#" className="flex items-center gap-2 font-bold text-xl tracking-tight text-white">
+                    <Image src="/favicon.ico" alt="Logo" width={32} height={32} />
                     <span className="hidden md:inline">AXIOM<span className="text-zinc-500 font-normal ml-1 text-sm">Pro</span></span>
-                </a>
+                </Link>
                 <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium text-zinc-400">
-                    <a href="#" className="hover:text-white transition-colors">Discover</a>
-                    <a href="#" className="text-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.5)]">Pulse</a>
-                    <a href="#" className="hover:text-white transition-colors">Trackers</a>
-                    <a href="#" className="hover:text-white transition-colors">Perpetuals</a>
-                    <a href="#" className="hover:text-white transition-colors">Yield</a>
-                    <a href="#" className="hover:text-white transition-colors">Vision</a>
-                    <a href="#" className="hover:text-white transition-colors">Portfolio</a>
-                    <a href="#" className="hover:text-white transition-colors">Rewards</a>
+                    <Link href="#" className="hover:text-white transition-colors">Discover</Link>
+                    <Link href="#" className="text-blue-400 ">Pulse</Link>
+                    <Link href="#" className="hover:text-white transition-colors">Trackers</Link>
+                    <Link href="#" className="hover:text-white transition-colors">Perpetuals</Link>
+                    <Link href="#" className="hover:text-white transition-colors">Yield</Link>
+                    <Link href="#" className="hover:text-white transition-colors">Vision</Link>
+                    <Link href="#" className="hover:text-white transition-colors">Portfolio</Link>
+                    <Link href="#" className="hover:text-white transition-colors">Rewards</Link>
                 </nav>
             </div>
 
@@ -41,12 +41,12 @@ export const Header: React.FC = () => {
                 </button>
 
                 {/* SOL Dropdown */}
-                <button className="hidden md:flex items-center gap-2 rounded-lg border border-zinc-800 bg-[#0c0c0e] px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-900 transition-colors">
-                    <img src="/solana-logo.svg" alt="SOL" className="h-4 w-4" />
-                    <span>SOL</span>
+                <button className="hidden md:flex items-center gap-2 rounded-2xl border border-zinc-800 bg-[#0c0c0e] px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-900 transition-colors">
+                    <Image src="/solana-logo.svg" alt="SOL" className="h-4 w-4" width={16} height={16} />
+                    <span>SOL</span> <span><ChevronDown size={16} /></span>
                 </button>
 
-                <button className="hidden md:flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-1.5 text-sm font-bold text-white hover:bg-blue-500 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)]">
+                <button className="hidden md:flex items-center gap-2 rounded-2xl bg-blue-600 px-4 py-1.5 text-sm font-bold text-white hover:bg-blue-500 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)]">
                     Deposit
                 </button>
 
@@ -57,12 +57,45 @@ export const Header: React.FC = () => {
                 </button>
 
                 <div className="flex items-center gap-1">
+
                     <button className="hidden md:block p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
-                        <Settings size={18} />
+                        <Star size={18} />
                     </button>
                     <button className="hidden md:block p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors relative">
                         <Bell size={18} />
                         <span className="absolute top-2 right-2 h-1.5 w-1.5 bg-blue-500 rounded-full"></span>
+                    </button>
+                    <button className="hidden md:block p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
+                        <Settings size={18} />
+                    </button>
+                    <button className="hidden md:flex items-center items-stretch gap-1 px-3 py-1.5 bg-zinc-900 border border-zinc-700 rounded-full text-xs text-white">
+                        {/* Placeholder wallet icon */}
+                        <Wallet size={16} />
+                        <span>0</span>
+
+
+
+
+
+                        {/* Placeholder token icon */}
+                        <Image
+                            src="/solana-logo.svg"
+                            alt="SOL"
+                            width={12}
+                            height={12}
+                            className="ml-2 object-contain"
+                        />
+                        <span>0</span>
+
+
+                        {/* Vertical Divider */}
+                        <span className=" w-px bg-zinc-600 mx-1"></span>
+                        <CircleDollarSign size={16} />
+
+
+
+                        {/* Arrow */}
+                        <ChevronDown size={16} />
                     </button>
                     <button className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
                         <Menu size={20} className="md:hidden" />
