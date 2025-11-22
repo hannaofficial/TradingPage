@@ -18,6 +18,40 @@ export const PulseColumn: React.FC<PulseColumnProps> = ({ title, variant, tokens
     const [filterOpen, setFilterOpen] = useState(false);
     const [localTokens, setLocalTokens] = useState<TokenData[]>([]);
     const initialized = React.useRef(false);
+    const [convertingIds, setConvertingIds] = useState<Set<string>>(new Set());
+    const tokensRef = React.useRef(tokens);
+
+    // Keep ref updated for the interval
+    React.useEffect(() => {
+        tokensRef.current = tokens;
+    }, [tokens]);
+
+    // Manage ephemeral conversion effects for Final Stretch
+    React.useEffect(() => {
+        if (variant !== 'final') return;
+
+        // FUTURE: Replace this function with metric-based logic
+        // Example: return tokens.filter(t => t.conversionScore > threshold).slice(0, 5)
+        const selectTokensForConversion = (tokens: TokenData[]): TokenData[] => {
+            // Current: Always select top 5 tokens
+            // Future: Can be replaced with any metric-based selection logic
+            return tokens.slice(0, 5);
+        };
+
+        const interval = setInterval(() => {
+            const currentTokens = tokensRef.current;
+            if (currentTokens.length === 0) return;
+
+            // Get tokens that should show conversion effect
+            const selectedTokens = selectTokensForConversion(currentTokens);
+
+            // Update the converting IDs to always show top 5
+            setConvertingIds(new Set(selectedTokens.map(t => t.id)));
+
+        }, 2000); // Check every 2 seconds to keep top 5 updated
+
+        return () => clearInterval(interval);
+    }, [variant]);
 
     // Initialize local tokens
     React.useEffect(() => {
@@ -134,11 +168,39 @@ export const PulseColumn: React.FC<PulseColumnProps> = ({ title, variant, tokens
             <div className="flex-1 min-h-0 w-full overflow-y-auto custom-scrollbar px-0  pb-24 md:pb-10 bg-black divide-y divide-zinc-800/40">
                 {loading ? (
                     Array.from({ length: 6 }).map((_, i) => <TokenCardSkeleton key={i} />)
-
                 ) : (
-                    localTokens.map(token => (
-                        <TokenCard key={token.id} token={token} />
-                    ))
+                    (() => {
+                        // Get the base token list
+                        let tokenList = title === 'New Pairs' ? localTokens : [...tokens].sort((a, b) => b.createdAt - a.createdAt);
+
+                        // For Final Stretch, sort converting tokens to the top
+                        if (variant === 'final' && convertingIds.size > 0) {
+                            tokenList = tokenList.sort((a, b) => {
+                                const aConverting = convertingIds.has(a.id);
+                                const bConverting = convertingIds.has(b.id);
+
+                                // Tokens with conversion effect first
+                                if (aConverting && !bConverting) return -1;
+                                if (!aConverting && bConverting) return 1;
+
+                                // Otherwise maintain original order (by createdAt)
+                                return b.createdAt - a.createdAt;
+                            });
+                        }
+
+                        return tokenList.map((token, index) => {
+                            // Logic for Final Stretch conversion effect
+                            const showConversion = convertingIds.has(token.id);
+
+                            return (
+                                <TokenCard
+                                    key={token.id}
+                                    token={token}
+                                    conversionActive={showConversion}
+                                />
+                            );
+                        });
+                    })()
                 )}
 
             </div>

@@ -1,11 +1,12 @@
 import React, { memo, useState, useEffect } from 'react';
 import { TokenData } from '@/types';
 import { formatCurrency, formatTimeAgo, cn } from '@/utils/utils';
-import { Shield, Globe, Search, Users, Rocket, Copy, Zap, Leaf, Lock, EyeOff, FlagOff, TouchpadOff, ShieldCheck } from 'lucide-react';
+import { Shield, Globe, Search, Users, Rocket, Copy, Zap, Leaf, Lock, EyeOff, FlagOff, TouchpadOff, ShieldCheck, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 
 interface TokenCardProps {
     token: TokenData;
+    conversionActive?: boolean;
 }
 
 
@@ -59,7 +60,9 @@ function stableHashToIndex(id: string, max: number) {
 
 //Token Card Function
 
-export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
+export const TokenCard: React.FC<TokenCardProps> = memo(({ token, conversionActive }) => {
+    const palette = BORDER_PALETTES[pickIndex(token.id || token.symbol || 'default', BORDER_PALETTES.length)];
+
     const isNew = token.status === 'new';
     const isMigrated = token.status === 'migrated';
 
@@ -103,14 +106,18 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
 
 
     /* inside component */
-    const USE_RANDOM_BORDER = false; // set true for fully random each render
-    const paletteIndex = USE_RANDOM_BORDER
-        ? Math.floor(Math.random() * BORDER_PALETTES.length)
-        : stableHashToIndex(token.id || token.symbol || Math.random().toString(), BORDER_PALETTES.length);
-    const palette = BORDER_PALETTES[paletteIndex];
+    /* inside component */
+    // const USE_RANDOM_BORDER = false; 
+    // const paletteIndex = ...
+    // const palette = ... 
+    // (Removed duplicate logic)
 
     return (
-        <div className="group relative flex gap-2 px-3 py-3 bg-transparent hover:bg-zinc-800/60 transition-colors duration-200 w-full overflow-hidden h-[100px]">
+        <div className={cn(
+            "group relative flex gap-2 px-3 py-3 bg-transparent hover:bg-zinc-800/60 transition-colors duration-200 w-full overflow-hidden h-[100px]",
+            conversionActive && "bg-zinc-900/20" // Slight bg tint if active
+        )}>
+
             {/* Hover actions (place this as the first child inside the top-level .group div) */}
             <div className="absolute left-2 top-4 flex flex-col items-center gap-1 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200 z-20">
                 <button className="h-4 w-4 flex items-center p-[2px] justify-center rounded-sm bg-zinc-900 border border-zinc-800 text-zinc-400 hover:bg-zinc-800/80 transition">
@@ -146,19 +153,6 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
                     </div>
                 </div>
 
-                {/* Status Indicator  */}
-                {/* <div className="absolute bottom-2 -right-0.5">
-                    <div className={cn(
-                        "h-3.5 w-3.5 rounded-full flex items-center justify-center bg-black border-[1px]",
-                        palette.border
-                    )}>
-                        {isNew ? (
-                            <Leaf size={8} className="text-emerald-400" />
-                        ) : (
-                            <Rocket size={8} className="text-rose-400" />
-                        )}
-                    </div>
-                </div> */}
                 {/*  indicator */}
                 {(() => {
 
@@ -236,7 +230,7 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
             </div>
 
             {/* Right: Metrics */}
-            <div className="flex flex-col items-end justify-between w-[85px] flex-shrink-0 ml-1 py-0.5">
+            <div className="flex flex-col items-end justify-between w-[85px] flex-shrink-0 ml-1 py-0.5 z-10">
                 {/* Row 1: MC & Vol */}
                 <div className="text-right w-full">
                     <div className="flex items-baseline justify-end gap-1">
@@ -266,12 +260,58 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
                     </div>
                 </div>
 
-                {/* Row 3: Quick Buy Button */}
-                <button className="flex items-center   gap-1 bg-blue-600 hover:bg-blue-500 text-black text-[10px] font-bold py-1 px-2 rounded-2xl transition-colors shadow-[0_0_10px_rgba(37,99,235,0.2)]">
-                    <Zap size={10} fill="currentColor" />
-                    <span>0 SOL</span>
-                </button>
+                {/*  Quick Buy Button OR Conversion Symbol */}
+                {conversionActive ? (
+                    <div className="flex items-center  mt-1">
+                        {/* Red Circle */}
+                        <div className="w-4 h-4 rounded-full border border-rose-500/50 flex items-center justify-center bg-rose-500/10">
+                            <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                        </div>
+
+                        {/* Animated Arrows - Light Sweep (Masked Overlay) */}
+                        {/* Animated Arrows - per-arrow staggered pulse (left -> right) */}
+                        <div className="relative flex items-center -space-x-0.5 w-8 justify-center">
+                            {/* Base Layer (Dim) */}
+                            <div className="flex items-center text-emerald-900/40 -space-x-0.5">
+                                <ChevronRight size={8} strokeWidth={3} />
+                                <ChevronRight size={8} strokeWidth={3} />
+                                <ChevronRight size={8} strokeWidth={3} />
+                            </div>
+
+                            {/* Overlay Layer (Bright) - each arrow gets its own animated span */}
+                            <div className="absolute inset-0 flex items-center justify-center -space-x-0.5 pointer-events-none">
+                                <span className="arrow-bright" style={{ animationDelay: '0s' }}>
+                                    <ChevronRight size={8} strokeWidth={3} className="text-emerald-400" />
+                                </span>
+                                <span className="arrow-bright" style={{ animationDelay: '0.13s' }}>
+                                    <ChevronRight size={8} strokeWidth={3} className="text-emerald-400" />
+                                </span>
+                                <span className="arrow-bright" style={{ animationDelay: '0.26s' }}>
+                                    <ChevronRight size={8} strokeWidth={3} className="text-emerald-400" />
+                                </span>
+                            </div>
+                        </div>
+
+
+                        {/* Yellow Circle */}
+                        <div className="w-4 h-4 rounded-full border border-amber-500/50 flex items-center justify-center bg-amber-500/10">
+                            <div className="w-2 h-2 rounded-full bg-amber-500" />
+                        </div>
+                    </div>
+                ) : (
+                    <button className="flex items-center   gap-1 bg-blue-600 hover:bg-blue-500 text-black text-[10px] font-bold py-1 px-2 rounded-2xl transition-colors shadow-[0_0_10px_rgba(37,99,235,0.2)]">
+                        <Zap size={10} fill="currentColor" />
+                        <span>0 SOL</span>
+                    </button>
+                )}
             </div>
+
+            {/* Shine Effect Overlay - Improved Visibility */}
+            {conversionActive && (
+                <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
+                    <div className="absolute top-0 bottom-0 left-0 w-[200%] animate-shimmer bg-gradient-to-r from-transparent via-blue-500/10 to-transparent -skew-x-12" />
+                </div>
+            )}
         </div>
     );
 }, (prev, next) => {
@@ -279,6 +319,7 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
         prev.token.id === next.token.id &&
         prev.token.marketCap === next.token.marketCap &&
         prev.token.txCount === next.token.txCount &&
-        prev.token.volume === next.token.volume
+        prev.token.volume === next.token.volume &&
+        prev.conversionActive === next.conversionActive
     );
 });
