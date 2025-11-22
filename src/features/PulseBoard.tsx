@@ -6,6 +6,7 @@ import { RootState } from '@/store';
 import { PulseColumn } from '@/components/PulseColumn';
 import { FilterModal } from '@/components/FilterModal';
 import { WalletModal } from '@/components/WalletModal';
+import { DisplayModal } from '@/components/DisplayModal';
 import { useWebSocketMock } from '@/services/useWebSocketMock';
 import { ChevronDown, ChevronUp, HelpCircle, Bookmark, Volume2, Monitor, Keyboard, Wallet, Settings, List, Target, Zap, Filter } from 'lucide-react';
 import { cn } from '@/utils/utils';
@@ -18,6 +19,7 @@ export const PulseBoard: React.FC = () => {
     const [isMobileHeaderExpanded, setIsMobileHeaderExpanded] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+    const [isDisplayModalOpen, setIsDisplayModalOpen] = useState(false);
 
     // Start the mock socket
     useWebSocketMock();
@@ -152,7 +154,10 @@ export const PulseBoard: React.FC = () => {
                         {/* Middle Row */}
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 text-white text-xs font-medium border border-zinc-800">
+                                <button
+                                    onClick={() => setIsDisplayModalOpen(true)}
+                                    className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 text-white text-xs font-medium border border-zinc-800"
+                                >
                                     <List size={14} />
                                     <span>Display</span>
                                     <ChevronDown size={12} />
@@ -252,6 +257,11 @@ export const PulseBoard: React.FC = () => {
             <WalletModal
                 isOpen={isWalletModalOpen}
                 onClose={() => setIsWalletModalOpen(false)}
+            />
+
+            <DisplayModal
+                isOpen={isDisplayModalOpen}
+                onClose={() => setIsDisplayModalOpen(false)}
             />
 
         </div>

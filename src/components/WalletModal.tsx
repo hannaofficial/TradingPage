@@ -30,7 +30,7 @@ export const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose }) => 
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center md:items-start md:pt-20 px-0 md:px-4">
+                <div className="fixed inset-0 z-100 flex items-center justify-center md:items-start md:pt-20 px-0 md:px-4">
                     {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
