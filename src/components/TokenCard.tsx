@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { TokenData } from '@/types';
 import { formatCurrency, formatTimeAgo, cn } from '@/utils/utils';
-import { Shield, Globe, Search, Users, Rocket, Copy, Zap, Leaf, Lock, EyeOff, FlagOff, TouchpadOff } from 'lucide-react';
+import { Shield, Globe, Search, Users, Rocket, Copy, Zap, Leaf, Lock, EyeOff, FlagOff, TouchpadOff, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
 
 interface TokenCardProps {
@@ -27,26 +27,45 @@ const StatBadge = ({ text, variant }: { text: string, variant: string }) => {
     );
 };
 
+
+const ICONS = [Leaf, Rocket, ShieldCheck, Zap];
+
+// stable pick based on token id (deterministic, so it doesn't change every render)
+function pickIndex(id: string, max: number) {
+    let h = 2166136261 >>> 0;
+    for (let i = 0; i < id.length; i++) {
+        h = Math.imul(h ^ id.charCodeAt(i), 16777619) >>> 0;
+    }
+    return h % max;
+}
+
+// for now I am randomly picking a border color but it can be scalable once the logic is known to any number of border colors
+const BORDER_PALETTES = [
+    { bg: 'bg-rose-500/80', ring: 'ring-rose-500/40', border: 'border-rose-500' },
+    { bg: 'bg-emerald-500/80', ring: 'ring-emerald-500/40', border: 'border-emerald-500' },
+    { bg: 'bg-blue-400/70', ring: 'ring-blue-400/30', border: 'border-blue-400' },
+    { bg: 'bg-amber-400/70', ring: 'ring-amber-400/30', border: 'border-amber-400' },
+    { bg: 'bg-violet-500/70', ring: 'ring-violet-500/30', border: 'border-violet-500' },
+];
+
+function stableHashToIndex(id: string, max: number) {
+    let h = 2166136261 >>> 0;
+    for (let i = 0; i < id.length; i++) {
+        h = Math.imul(h ^ id.charCodeAt(i), 16777619) >>> 0;
+    }
+    return h % max;
+}
+
+
+//Token Card Function
+
 export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
     const isNew = token.status === 'new';
     const isMigrated = token.status === 'migrated';
 
 
-    const BORDER_PALETTES = [
-        { bg: 'bg-rose-500/80', ring: 'ring-rose-500/40', border: 'border-rose-500' },
-        { bg: 'bg-emerald-500/80', ring: 'ring-emerald-500/40', border: 'border-emerald-500' },
-        { bg: 'bg-blue-400/70', ring: 'ring-blue-400/30', border: 'border-blue-400' },
-        { bg: 'bg-amber-400/70', ring: 'ring-amber-400/30', border: 'border-amber-400' },
-        { bg: 'bg-violet-500/70', ring: 'ring-violet-500/30', border: 'border-violet-500' },
-    ];
 
-    function stableHashToIndex(id: string, max: number) {
-        let h = 2166136261 >>> 0;
-        for (let i = 0; i < id.length; i++) {
-            h = Math.imul(h ^ id.charCodeAt(i), 16777619) >>> 0;
-        }
-        return h % max;
-    }
+
 
     /* inside component */
     const USE_RANDOM_BORDER = false; // set true for fully random each render
@@ -77,11 +96,11 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
 
                 {/* Outer colored ring (bg shows through the gap) */}
                 <div className={cn(
-                    "rounded-sm p-[1px] inline-block",
+                    "rounded-sm p-px inline-block",
                     palette.bg
                 )}>
                     {/* Inner neutral border + image container */}
-                    <div className="h-[60px] w-[60px] p-[1px] rounded-[2px] overflow-hidden bg-zinc-900 border border-zinc-800 shadow-sm">
+                    <div className="h-[60px] w-[60px] p-px rounded-[2px] overflow-hidden bg-zinc-900 border border-zinc-800 shadow-sm">
                         <Image
                             src={token.imageUrl}
                             alt={token.name || token.symbol}
@@ -93,7 +112,7 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
                 </div>
 
                 {/* Status Indicator  */}
-                <div className="absolute bottom-2 -right-0.5">
+                {/* <div className="absolute bottom-2 -right-0.5">
                     <div className={cn(
                         "h-3.5 w-3.5 rounded-full flex items-center justify-center bg-black border-[1px]",
                         palette.border
@@ -104,7 +123,30 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
                             <Rocket size={8} className="text-rose-400" />
                         )}
                     </div>
-                </div>
+                </div> */}
+                {/*  indicator */}
+                {(() => {
+
+
+                    const idx = pickIndex(token.id || token.symbol || 'fallback', ICONS.length);
+                    const Icon = ICONS[idx];
+
+                    return (
+                        <div className="absolute bottom-2 -right-0.5 pointer-events-none">
+                            <div
+                                className={cn(
+                                    "h-3.5 w-3.5 rounded-full flex items-center justify-center bg-black border-px",
+                                    palette.border // same border color as image ring
+                                )}
+                            >
+                                <Icon size={8} className="text-white" />
+                            </div>
+                        </div>
+                    );
+                })()}
+
+
+
 
 
                 {/* ID label under image */}
