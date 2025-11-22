@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, RotateCcw, Search, Check, SlidersHorizontal } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import { cn } from '@/utils/utils';
 
 interface FilterModalProps {
@@ -50,6 +50,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, colum
     const [excludeKeywords, setExcludeKeywords] = useState('');
     const [dexPaid, setDexPaid] = useState(false);
     const [caEndsPump, setCaEndsPump] = useState(false);
+    const dragControls = useDragControls();
 
     // Prevent body scroll when open
     useEffect(() => {
@@ -94,12 +95,22 @@ export const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, colum
                         animate={{ y: 0 }}
                         exit={{ y: "100%" }}
                         transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                        drag="y"
+                        dragControls={dragControls}
+                        dragListener={false}
+                        dragConstraints={{ top: 0, bottom: 0 }}
+                        dragElastic={{ top: 0, bottom: 1 }}
+                        onDragEnd={(event, info) => {
+                            if (info.offset.y > 100 || info.velocity.y > 500) {
+                                onClose();
+                            }
+                        }}
                         className="relative w-full md:max-w-[500px] h-[90dvh] md:h-auto md:max-h-[85vh] bg-[#0c0c0e] border-t md:border border-zinc-800 rounded-t-2xl md:rounded-xl shadow-2xl flex flex-col overflow-hidden mt-auto md:mt-0"
                     >
                         {/* Drag Handle */}
                         <div
-                            className="w-full flex items-center justify-center pt-3 pb-1 cursor-pointer md:hidden"
-                            onClick={onClose}
+                            className="w-full flex items-center justify-center pt-3 pb-1 cursor-grab active:cursor-grabbing touch-none md:hidden"
+                            onPointerDown={(e) => dragControls.start(e)}
                         >
                             <div className="w-10 h-1 bg-zinc-700 rounded-full hover:bg-zinc-600 transition-colors" />
                         </div>
