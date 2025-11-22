@@ -132,7 +132,7 @@ export const PulseBoard: React.FC = () => {
                             <ChevronUp size={16} className="text-white" />
                         ) : (
                             <div className="absolute right-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black border border-zinc-800 hover:bg-zinc-900 transition-colors ">
-                                <span className="text-xs text-zinc-300 font-medium">P1</span>
+
                                 <Settings size={14} className="text-white" />
                             </div>
                         )}

@@ -96,6 +96,13 @@ export const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, colum
                         transition={{ type: "spring", damping: 25, stiffness: 300 }}
                         className="relative w-full md:max-w-[500px] h-[90dvh] md:h-auto md:max-h-[85vh] bg-[#0c0c0e] border-t md:border border-zinc-800 rounded-t-2xl md:rounded-xl shadow-2xl flex flex-col overflow-hidden mt-auto md:mt-0"
                     >
+                        {/* Drag Handle */}
+                        <div
+                            className="w-full flex items-center justify-center pt-3 pb-1 cursor-pointer md:hidden"
+                            onClick={onClose}
+                        >
+                            <div className="w-10 h-1 bg-zinc-700 rounded-full hover:bg-zinc-600 transition-colors" />
+                        </div>
                         {/* Header */}
                         <div className="flex items-center justify-between p-4 border-b border-zinc-800 shrink-0">
                             <h2 className="text-lg font-normal text-white">Filters</h2>
