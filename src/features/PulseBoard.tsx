@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { PulseColumn } from '@/components/PulseColumn';
 import { FilterModal } from '@/components/FilterModal';
+import { WalletModal } from '@/components/WalletModal';
 import { useWebSocketMock } from '@/services/useWebSocketMock';
 import { ChevronDown, ChevronUp, HelpCircle, Bookmark, Volume2, Monitor, Keyboard, Wallet, Settings, List, Target, Zap, Filter } from 'lucide-react';
 import { cn } from '@/utils/utils';
@@ -16,6 +17,7 @@ export const PulseBoard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<CardVariant>('new');
     const [isMobileHeaderExpanded, setIsMobileHeaderExpanded] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
 
     // Start the mock socket
     useWebSocketMock();
@@ -180,7 +182,10 @@ export const PulseBoard: React.FC = () => {
                         {/* Bottom Row */}
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-2 px-2 py-1 rounded-lg bg-zinc-900/50 border border-zinc-800">
+                                <div
+                                    onClick={() => setIsWalletModalOpen(true)}
+                                    className="flex items-center gap-2 px-2 py-1 rounded-lg bg-zinc-900/50 border border-zinc-800 cursor-pointer hover:bg-zinc-800/50 transition-colors"
+                                >
                                     <Wallet size={14} className="text-zinc-400" />
                                     <span className="text-xs text-white font-mono">1</span>
                                     <div className="w-px h-3 bg-zinc-800"></div>
@@ -242,6 +247,11 @@ export const PulseBoard: React.FC = () => {
             <FilterModal
                 isOpen={isFilterOpen}
                 onClose={() => setIsFilterOpen(false)}
+            />
+
+            <WalletModal
+                isOpen={isWalletModalOpen}
+                onClose={() => setIsWalletModalOpen(false)}
             />
 
         </div>
