@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { PulseColumn } from '@/components/PulseColumn';
+import { FilterModal } from '@/components/FilterModal';
 import { useWebSocketMock } from '@/services/useWebSocketMock';
 import { ChevronDown, ChevronUp, HelpCircle, Bookmark, Volume2, Monitor, Keyboard, Wallet, Settings, List, Target, Zap, Filter } from 'lucide-react';
 import { cn } from '@/utils/utils';
@@ -14,6 +15,7 @@ export const PulseBoard: React.FC = () => {
     const { items } = useSelector((state: RootState) => state.pulse);
     const [activeTab, setActiveTab] = useState<CardVariant>('new');
     const [isMobileHeaderExpanded, setIsMobileHeaderExpanded] = useState(false);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     // Start the mock socket
     useWebSocketMock();
@@ -164,7 +166,10 @@ export const PulseBoard: React.FC = () => {
                                 <button className="text-zinc-400 hover:text-white transition-colors">
                                     <HelpCircle size={16} />
                                 </button>
-                                <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 text-white text-xs font-medium border border-zinc-800">
+                                <button
+                                    onClick={() => setIsFilterOpen(true)}
+                                    className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 text-white text-xs font-medium border border-zinc-800"
+                                >
                                     <Filter size={14} />
                                     <span>Filter</span>
                                     <ChevronDown size={12} />
@@ -233,6 +238,11 @@ export const PulseBoard: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            <FilterModal
+                isOpen={isFilterOpen}
+                onClose={() => setIsFilterOpen(false)}
+            />
 
         </div>
     );

@@ -90,17 +90,23 @@ export const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, colum
 
                     {/* Modal Content */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                        initial={{ y: "100%" }}
+                        animate={{ y: 0 }}
+                        exit={{ y: "100%" }}
+                        transition={{ type: "spring", damping: 25, stiffness: 300 }}
                         className="relative w-full md:max-w-[500px] h-[90dvh] md:h-auto md:max-h-[85vh] bg-[#0c0c0e] border-t md:border border-zinc-800 rounded-t-2xl md:rounded-xl shadow-2xl flex flex-col overflow-hidden mt-auto md:mt-0"
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between p-4 border-b border-zinc-800 shrink-0">
-                            <h2 className="text-lg font-semibold text-white">Filters</h2>
-                            <button onClick={onClose} className="text-zinc-400 hover:text-white">
-                                <X size={20} />
-                            </button>
+                            <h2 className="text-lg font-normal text-white">Filters</h2>
+                            <div className="flex items-center gap-2">
+                                <button className="px-3 py-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-medium transition-colors">
+                                    Import
+                                </button>
+                                <button className="px-3 py-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-medium transition-colors">
+                                    Export
+                                </button>
+                            </div>
                         </div>
 
                         {/* Tabs */}
@@ -281,18 +287,24 @@ export const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, colum
                         </div>
 
                         {/* Footer */}
-                        <div className="p-4 border-t border-zinc-800 flex items-center justify-between shrink-0 bg-[#0c0c0e]">
-                            <div className="flex items-center gap-2">
-                                <button className="px-4 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-medium transition-colors">
-                                    Import
-                                </button>
-                                <button className="px-4 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-medium transition-colors">
-                                    Export
-                                </button>
-                            </div>
+                        <div className="p-4 px-16 border-t border-zinc-800 flex items-center justify-between shrink-0 bg-[#0c0c0e]">
+                            <button
+                                onClick={() => {
+                                    setSelectedProtocols([]);
+                                    setSelectedQuotes(['sol']);
+                                    setSearchKeywords('');
+                                    setExcludeKeywords('');
+                                    setDexPaid(false);
+                                    setCaEndsPump(false);
+                                }}
+                                className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors"
+                            >
+                                <RotateCcw size={16} />
+                                <span className="text-xs font-medium">Reset New Pairs</span>
+                            </button>
                             <button
                                 onClick={onClose}
-                                className="px-6 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-colors"
+                                className="px-8 py-2.5 rounded-full bg-blue-900 hover:bg-blue-500 text-white text-xs font-bold transition-colors shadow-lg shadow-blue-900/20"
                             >
                                 Apply All
                             </button>
