@@ -1,7 +1,7 @@
 // app/layout.tsx
 import './globals.css';
 import React from 'react';
-import { Providers } from '@/providers/Providers';
+import { Providers } from '@/features/providers/Providers';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { MobileNav } from '@/components/ui/MobileNav';

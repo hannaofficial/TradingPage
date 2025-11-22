@@ -135,8 +135,8 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
                         <div className="absolute bottom-2 -right-0.5 pointer-events-none">
                             <div
                                 className={cn(
-                                    "h-3.5 w-3.5 rounded-full flex items-center justify-center bg-black border-px",
-                                    palette.border // same border color as image ring
+                                    "h-3.5 w-3.5 rounded-full flex items-center justify-center bg-black border-[1px]",
+                                    palette.border
                                 )}
                             >
                                 <Icon size={8} className="text-white" />

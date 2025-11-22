@@ -18,6 +18,12 @@ import {
     ChevronLeft,
     ChevronRight,
 } from 'lucide-react';
+import { UserMenu } from './UserMenu';
+import { MobileMenu } from './MobileMenu';
+import { WalletDropdown } from './WalletDropdown';
+import { WatchlistModal } from './WatchlistModal';
+import { DepositModal } from './DepositModal';
+import { SearchModal } from './SearchModal';
 
 export const Header: React.FC = () => {
     // nav scroll refs & state
@@ -69,6 +75,9 @@ export const Header: React.FC = () => {
     };
 
     const [searchOpen, setSearchOpen] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [watchlistOpen, setWatchlistOpen] = useState(false);
+    const [depositOpen, setDepositOpen] = useState(false);
 
     const NAV_ITEMS = [
         { key: 'discover', label: 'Discover', href: '#' },
@@ -211,7 +220,10 @@ export const Header: React.FC = () => {
                         <ChevronDown size={16} />
                     </button>
 
-                    <button className="hidden md:flex items-center gap-2 rounded-2xl bg-blue-600 px-4 py-1.5 text-sm font-bold text-black hover:bg-blue-500 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)] shrink-0">
+                    <button
+                        onClick={() => setDepositOpen(true)}
+                        className="hidden md:flex items-center gap-2 rounded-2xl bg-blue-600 px-4 py-1.5 text-sm font-semibold text-black hover:bg-blue-500 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)] shrink-0"
+                    >
                         Deposit
                     </button>
 
@@ -222,59 +234,28 @@ export const Header: React.FC = () => {
 
 
                     <div className="flex items-center gap-1 shrink-0">
-                        <button className="hidden md:block h-9 w-9 flex items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+                        <button
+                            onClick={() => setWatchlistOpen(true)}
+                            className="hidden md:flex h-9 w-9  items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                        >
                             <Star size={18} />
                         </button>
 
-                        <button className="hidden md:block h-9 w-9 flex items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors relative">
+                        <button className="hidden md:flex h-9 w-9  items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors relative">
                             <Bell size={18} />
-                            <span className="absolute top-2 right-2 h-1.5 w-1.5 bg-blue-500 rounded-full" />
                         </button>
 
-                        <button className="hidden md:block h-9 w-9 flex items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
-                            <Settings size={18} />
-                        </button>
 
-                        {!isCompactWallet ? (
-                            <button className="hidden md:flex items-center items-stretch gap-1 px-3 py-1.5 bg-zinc-800 border border-zinc-700 rounded-full text-xs text-white flex-shrink-0 h-9">
-                                <div className="flex items-center justify-center h-6 w-6">
-                                    <Wallet size={16} />
-                                </div>
-                                <Image src="/solana-logo.svg" alt="SOL" width={12} height={12} className="ml-1 object-contain" /> <span className=' flex items-center justify-center h-6 w-6'>0</span>
-                                <span className="w-px bg-zinc-600 mx-1" />
-                                <div className="flex items-center justify-center gap-1 ">
-                                    <CircleDollarSign size={16} />
-                                    <ChevronDown size={16} />
-                                </div>
-                            </button>
-                        ) : (
-                            <button
-                                className="
-                        flex items-center items-stretch  gap-1              
-                        px-2 py-1                                            
-                        bg-zinc-800 border border-zinc-700 rounded-full
-                        text-white text-[11px]                               
-                        shrink-0 h-8                                    
-                        
-                        sm:h-9 sm:text-xs sm:px-3
-                        md:h-9 md:px-3 md:gap-2                              
-                    "
-                            >
-                                <div className="flex items-center justify-center ">
-                                    <Wallet size={16} />
-                                </div>
-
-                                <div className="flex items-center justify-center ">
-                                    <ChevronDown size={16} />
-                                </div>
-                            </button>
-
-                        )}
+                        <WalletDropdown isCompact={isCompactWallet} />
 
 
-                        <button className="h-9 w-9 flex items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
-                            <Menu size={20} className="md:hidden" />
-                            <User size={18} className="hidden md:block" />
+                        <UserMenu className="hidden md:flex" />
+
+                        <button
+                            onClick={() => setMobileMenuOpen(true)}
+                            className="h-9 w-9 flex items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors md:hidden"
+                        >
+                            <Menu size={20} />
                         </button>
                     </div>
                 </div>
@@ -309,6 +290,11 @@ export const Header: React.FC = () => {
                     </div>
                 </div>
             )}
+
+            <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+            <WatchlistModal isOpen={watchlistOpen} onClose={() => setWatchlistOpen(false)} />
+            <DepositModal isOpen={depositOpen} onClose={() => setDepositOpen(false)} />
+            <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
         </>
     );
 };

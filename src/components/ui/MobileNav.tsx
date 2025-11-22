@@ -12,7 +12,7 @@ export const MobileNav: React.FC = () => {
     ];
 
     return (
-        <div className="md:hidden fixed bottom-0 left-0 w-full h-[60px] bg-[#050505] border-t border-zinc-900 flex items-center justify-around z-[100] pb-1">
+        <div className="md:hidden fixed bottom-0 left-0 w-full h-[60px] bg-[#050505] border-t border-zinc-900 flex items-center justify-around z-[90] pb-1">
             {navItems.map((item) => (
                 <button
                     key={item.label}
