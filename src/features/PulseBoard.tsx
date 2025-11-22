@@ -58,7 +58,10 @@ export const PulseBoard: React.FC = () => {
                     <button className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-500 bg-zinc-900 transition-colors">
                         <HelpCircle size={16} />
                     </button>
-                    <button className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-zinc-800 border border-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-colors text-sm font-medium">
+                    <button
+                        onClick={() => setIsDisplayModalOpen(true)}
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-zinc-800 border border-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-colors text-sm font-medium"
+                    >
                         <Monitor size={14} />
                         <span className='text-white'>Display</span>
                         <ChevronDown size={14} className="text-white" />
