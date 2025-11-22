@@ -123,6 +123,28 @@ export const PulseColumn: React.FC<PulseColumnProps> = ({ title, variant, tokens
         return () => clearTimeout(timeoutId);
     }, [title]); // Removed 'tokens' dependency to prevent resetting on prop updates
 
+    // Calculate token list with memoization
+    const tokenList = React.useMemo(() => {
+        // Get the base token list
+        let list = title === 'New Pairs' ? localTokens : [...tokens].sort((a, b) => b.createdAt - a.createdAt);
+
+        // For Final Stretch, sort converting tokens to the top
+        if (variant === 'final' && convertingIds.size > 0) {
+            list = list.sort((a, b) => {
+                const aConverting = convertingIds.has(a.id);
+                const bConverting = convertingIds.has(b.id);
+
+                // Tokens with conversion effect first
+                if (aConverting && !bConverting) return -1;
+                if (!aConverting && bConverting) return 1;
+
+                // Otherwise maintain original order (by createdAt)
+                return b.createdAt - a.createdAt;
+            });
+        }
+        return list;
+    }, [title, localTokens, tokens, variant, convertingIds]);
+
     return (
         <div className="flex flex-col h-full w-full bg-black overflow-hidden relative border-r border-zinc-800 last:border-r-0">
 
@@ -189,38 +211,18 @@ export const PulseColumn: React.FC<PulseColumnProps> = ({ title, variant, tokens
                 {loading ? (
                     Array.from({ length: 6 }).map((_, i) => <TokenCardSkeleton key={i} />)
                 ) : (
-                    (() => {
-                        // Get the base token list
-                        let tokenList = title === 'New Pairs' ? localTokens : [...tokens].sort((a, b) => b.createdAt - a.createdAt);
+                    tokenList.map((token) => {
+                        // Logic for Final Stretch conversion effect
+                        const showConversion = convertingIds.has(token.id);
 
-                        // For Final Stretch, sort converting tokens to the top
-                        if (variant === 'final' && convertingIds.size > 0) {
-                            tokenList = tokenList.sort((a, b) => {
-                                const aConverting = convertingIds.has(a.id);
-                                const bConverting = convertingIds.has(b.id);
-
-                                // Tokens with conversion effect first
-                                if (aConverting && !bConverting) return -1;
-                                if (!aConverting && bConverting) return 1;
-
-                                // Otherwise maintain original order (by createdAt)
-                                return b.createdAt - a.createdAt;
-                            });
-                        }
-
-                        return tokenList.map((token, index) => {
-                            // Logic for Final Stretch conversion effect
-                            const showConversion = convertingIds.has(token.id);
-
-                            return (
-                                <TokenCard
-                                    key={token.id}
-                                    token={token}
-                                    conversionActive={showConversion}
-                                />
-                            );
-                        });
-                    })()
+                        return (
+                            <TokenCard
+                                key={token.id}
+                                token={token}
+                                conversionActive={showConversion}
+                            />
+                        );
+                    })
                 )}
 
             </div>

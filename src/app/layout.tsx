@@ -33,8 +33,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {children}
             </main>
 
-            {/* Footer - Visible on all screens, with margin on mobile for nav */}
-            <div className="block mb-[60px] md:mb-0 relative z-50">
+            {/* Footer - Hidden on mobile, visible on desktop */}
+            <div className="hidden md:block relative z-50">
               <Footer />
             </div>
 

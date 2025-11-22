@@ -17,10 +17,10 @@ export const PulseBoard: React.FC = () => {
     // Start the mock socket
     useWebSocketMock();
 
-    // Filter logic
-    const newPairs = items.filter(i => i.status === 'new');
-    const finalStretch = items.filter(i => i.status === 'final');
-    const migrated = items.filter(i => i.status === 'migrated');
+    // Filter logic - Memoized to prevent re-calculation on every render
+    const newPairs = React.useMemo(() => items.filter(i => i.status === 'new'), [items]);
+    const finalStretch = React.useMemo(() => items.filter(i => i.status === 'final'), [items]);
+    const migrated = React.useMemo(() => items.filter(i => i.status === 'migrated'), [items]);
 
     const tabs: { id: CardVariant; label: string }[] = [
         { id: 'new', label: 'New Pairs' },

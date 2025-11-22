@@ -76,6 +76,15 @@ const pulseSlice = createSlice({
                 token.volume += Math.random() > 0.7 ? getRandomInt(10, 100) : 0;
                 token.txCount = Math.min(50, Math.max(1, token.txCount + getRandomInt(-1, 2)));
 
+                // Update holders
+                const holderChange = Math.floor(Math.random() * 5) - 2;
+                token.holders = Math.max(1, token.holders + holderChange);
+
+                // Update top10Holders
+                if (token.top10Holders === undefined) token.top10Holders = 10;
+                const top10Change = (Math.random() - 0.5) * 0.5;
+                token.top10Holders = Math.max(0.1, Math.min(100, token.top10Holders + top10Change));
+
                 // Occasionally add a new transaction badge or update time
             });
         },
