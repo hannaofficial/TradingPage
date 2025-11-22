@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-background text-zinc-200 font-sans selection:bg-primary/30">
         {/* Providers is a client component that injects Redux + React Query */}
         <Providers>
-          <div className="flex flex-col h-screen w-full overflow-hidden">
+          <div className="flex flex-col h-dvh w-full overflow-hidden">
             <Header />
 
             {/* main content area — PulseBoard will be rendered via app/page.tsx */}
@@ -33,8 +33,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {children}
             </main>
 
-            {/* Desktop Footer */}
-            <div className="hidden md:block">
+            {/* Footer - Visible on all screens, with margin on mobile for nav */}
+            <div className="block mb-[60px] md:mb-0 relative z-50">
               <Footer />
             </div>
 

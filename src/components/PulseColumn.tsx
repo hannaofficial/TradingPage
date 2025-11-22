@@ -72,20 +72,40 @@ export const PulseColumn: React.FC<PulseColumnProps> = ({ title, variant, tokens
         if (title !== 'New Pairs') return;
 
         const scheduleNext = () => {
-            const delay = Math.floor(Math.random() * 5000) + 1000; // 1-6 seconds
+            // Interval between 5s (5000ms) and 20s (20000ms)
+            const delay = Math.floor(Math.random() * 15000) + 5000;
 
             const timeoutId = setTimeout(() => {
                 setLocalTokens(prev => {
                     if (prev.length === 0) return prev;
 
-                    // Pick a random token to recycle
-                    const randomToken = prev[Math.floor(Math.random() * prev.length)];
+                    // Use ref to get latest tokens without resetting the effect
+                    const currentPool = tokensRef.current;
+
+                    // Get list of current token names in the column
+                    const existingNames = new Set(prev.map(t => t.name));
+
+                    // Find tokens from the pool that aren't currently displayed
+                    const availableTokens = currentPool.filter(t => !existingNames.has(t.name));
+
+                    // If all tokens are already shown, pick from the oldest ones to recycle
+                    let randomToken: TokenData;
+                    if (availableTokens.length > 0) {
+                        randomToken = availableTokens[Math.floor(Math.random() * availableTokens.length)];
+                    } else {
+                        // Fall back to picking from bottom half of the list (older tokens)
+                        // Ensure we have tokens to pick from even if list is short
+                        const recyclePool = prev.length > 1 ? prev.slice(Math.floor(prev.length / 2)) : prev;
+                        randomToken = recyclePool[Math.floor(Math.random() * recyclePool.length)];
+                    }
+
+                    if (!randomToken) return prev; // Safety check
 
                     const newToken: TokenData = {
                         ...randomToken,
                         id: Math.random().toString(36).substr(2, 9), // New ID to force re-render
                         createdAt: Date.now(), // Just created
-                        name: randomToken.name, // Keep same name/image for consistency or randomize if preferred
+                        name: randomToken.name,
                         symbol: randomToken.symbol,
                     };
 
@@ -101,7 +121,7 @@ export const PulseColumn: React.FC<PulseColumnProps> = ({ title, variant, tokens
 
         const timeoutId = scheduleNext();
         return () => clearTimeout(timeoutId);
-    }, [title]);
+    }, [title]); // Removed 'tokens' dependency to prevent resetting on prop updates
 
     return (
         <div className="flex flex-col h-full w-full bg-black overflow-hidden relative border-r border-zinc-800 last:border-r-0">
