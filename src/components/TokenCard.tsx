@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { TokenData } from '@/types';
 import { formatCurrency, formatTimeAgo, cn } from '@/utils/utils';
 import { Shield, Globe, Search, Users, Rocket, Copy, Zap, Leaf, Lock, EyeOff, FlagOff, TouchpadOff, ShieldCheck } from 'lucide-react';
@@ -63,8 +63,43 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
     const isNew = token.status === 'new';
     const isMigrated = token.status === 'migrated';
 
+    const [holders, setHolders] = useState(token.holders);
+    const [top10, setTop10] = useState(token.top10Holders || 1);
+
+    // Mock WebSocket for real-time updates
+    useEffect(() => {
+        const interval = setInterval(() => {
+            // Update holders (random walk within 1-1000)
+            setHolders(prev => {
+                const change = Math.floor(Math.random() * 10) - 3; // -3 to +6
+                const next = Math.max(1, Math.min(1000, prev + change));
+                return next;
+            });
+
+            // Update top10 (random small fluctuation)
+            setTop10(prev => {
+                const change = (Math.random() - 0.5) * 0.5;
+                return Math.max(0.1, Math.min(100, prev + change));
+            });
+        }, 2000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // Dynamic size based on holders (1-1000)
+    // Scale from 0.9 to 1.1
+    const holderScale = 0.9 + (holders / 1000) * 0.2;
 
 
+
+    const [timeAgo, setTimeAgo] = useState(formatTimeAgo(token.createdAt));
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTimeAgo(formatTimeAgo(token.createdAt));
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [token.createdAt]);
 
 
     /* inside component */
@@ -169,20 +204,23 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
                 {/* Row 2: Age & Socials */}
                 <div className="flex items-center gap-2 text-zinc-500 min-w-0">
                     <span className={cn("text-[10px] font-bold leading-none flex-shrink-0", isNew ? "text-emerald-500" : "text-blue-400")}>
-                        {formatTimeAgo(token.createdAt)}
+                        {timeAgo}
                     </span>
                     <div className="flex items-center gap-1 flex-shrink-0">
                         {token.isSafe ? <Shield size={10} className="text-emerald-500" /> : <Lock size={10} />}
                         <Globe size={10} className="hover:text-blue-400 cursor-pointer" />
                         <Search size={10} className="hover:text-zinc-300 cursor-pointer" />
                     </div>
-                    <div className="flex items-center gap-0.5 text-[10px] font-mono text-zinc-400 flex-shrink-0">
+                    <div
+                        className="flex items-center gap-0.5 text-[10px] font-mono text-zinc-400 flex-shrink-0 transition-all duration-300"
+                        style={{ transform: `scale(${holderScale})`, transformOrigin: 'left center' }}
+                    >
                         <Users size={10} />
-                        <span>{token.holders}</span>
+                        <span>{holders}</span>
                     </div>
                     <div className="flex items-center gap-0.5 text-[10px] font-mono text-amber-500/80 flex-shrink-0">
                         <span className="text-[8px]">👑</span>
-                        <span>{token.top10Holders || 1}%</span>
+                        <span>{top10.toFixed(0)}%</span>
                     </div>
                 </div>
 
@@ -214,13 +252,15 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
                 </div>
 
                 {/* Row 2: Liquidity & TX */}
-                <div className="w-full flex flex-col items-end gap-0.5">
+                <div className="w-full flex flex-col items-end
+                 gap-0.5">
                     <div className="flex items-center gap-1 justify-end w-full">
                         <span className="text-[9px] text-zinc-500 font-mono">F</span>
+
                         <span className="text-[10px] text-zinc-300 font-mono">0.0{Math.floor(Math.random() * 9)}</span>
                         <span className="text-[9px] text-zinc-500 font-mono ml-1">TX</span>
                         <span className="text-[10px] text-zinc-300 font-mono">{token.txCount}</span>
-                        <div className="w-8 h-0.5 bg-zinc-800 rounded-full ml-1">
+                        <div className="w-8 h-0.5 bg-rose-500/50 rounded-full ml-1 overflow-hidden">
                             <div className="h-full bg-emerald-500" style={{ width: `${Math.random() * 100}%` }}></div>
                         </div>
                     </div>
