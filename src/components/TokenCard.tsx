@@ -1,11 +1,15 @@
 import React, { memo } from 'react';
 import { TokenData } from '@/types';
 import { formatCurrency, formatTimeAgo, cn } from '@/utils/utils';
-import { Shield, Globe, Search, Users, Rocket, Copy, Zap, Leaf, Lock } from 'lucide-react';
+import { Shield, Globe, Search, Users, Rocket, Copy, Zap, Leaf, Lock, EyeOff, FlagOff, TouchpadOff } from 'lucide-react';
+import Image from 'next/image';
 
 interface TokenCardProps {
     token: TokenData;
 }
+
+
+
 
 // Sub-components for cleanliness
 const StatBadge = ({ text, variant }: { text: string, variant: string }) => {
@@ -27,23 +31,89 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
     const isNew = token.status === 'new';
     const isMigrated = token.status === 'migrated';
 
+
+    const BORDER_PALETTES = [
+        { bg: 'bg-rose-500/80', ring: 'ring-rose-500/40', border: 'border-rose-500' },
+        { bg: 'bg-emerald-500/80', ring: 'ring-emerald-500/40', border: 'border-emerald-500' },
+        { bg: 'bg-blue-400/70', ring: 'ring-blue-400/30', border: 'border-blue-400' },
+        { bg: 'bg-amber-400/70', ring: 'ring-amber-400/30', border: 'border-amber-400' },
+        { bg: 'bg-violet-500/70', ring: 'ring-violet-500/30', border: 'border-violet-500' },
+    ];
+
+    function stableHashToIndex(id: string, max: number) {
+        let h = 2166136261 >>> 0;
+        for (let i = 0; i < id.length; i++) {
+            h = Math.imul(h ^ id.charCodeAt(i), 16777619) >>> 0;
+        }
+        return h % max;
+    }
+
+    /* inside component */
+    const USE_RANDOM_BORDER = false; // set true for fully random each render
+    const paletteIndex = USE_RANDOM_BORDER
+        ? Math.floor(Math.random() * BORDER_PALETTES.length)
+        : stableHashToIndex(token.id || token.symbol || Math.random().toString(), BORDER_PALETTES.length);
+    const palette = BORDER_PALETTES[paletteIndex];
+
     return (
-        <div className="group relative flex gap-2 p-2 rounded-lg bg-[#0c0c0e] border border-zinc-800/60 hover:border-zinc-600 hover:bg-[#121214] transition-all duration-200 w-full overflow-hidden h-[100px]">
-            {/* Left: Image */}
+        <div className="group relative flex gap-2 px-3 py-3 bg-transparent hover:bg-zinc-800/60 transition-colors duration-200 w-full overflow-hidden h-[100px]">
+            {/* Hover actions (place this as the first child inside the top-level .group div) */}
+            <div className="absolute left-2 top-4 flex flex-col items-center gap-1 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200 z-20">
+                <button className="h-4 w-4 flex items-center p-[2px] justify-center rounded-sm bg-zinc-900 border border-zinc-800 text-zinc-400 hover:bg-zinc-800/80 transition">
+                    <EyeOff size={12} />
+                </button>
+
+                <button className="h-4 w-4 flex items-center p-[2px] justify-center rounded-sm bg-zinc-900 border border-zinc-800 text-zinc-400 hover:bg-zinc-800/80 transition">
+                    <TouchpadOff size={12} />
+                </button>
+
+                <button className="h-4 w-4 flex items-center p-[2px] justify-center rounded-sm bg-zinc-900 border border-zinc-800 text-zinc-400 hover:bg-zinc-800/80 transition">
+                    <FlagOff size={12} />
+                </button>
+            </div>
+
+            {/* Image*/}
             <div className="relative flex-shrink-0">
-                <div className="h-[52px] w-[52px] rounded-md overflow-hidden bg-zinc-900 ring-1 ring-zinc-800 group-hover:ring-zinc-600 transition-all">
-                    <img src={token.imageUrl} alt={token.name} className="h-full w-full object-cover" />
-                </div>
-                {/* Status Indicator on Image */}
-                <div className="absolute -bottom-1 -right-1 bg-zinc-950 rounded-full p-0.5">
-                    <div className={cn("h-3.5 w-3.5 rounded-full flex items-center justify-center border", isNew ? "bg-emerald-500/20 border-emerald-500/50" : "bg-rose-500/20 border-rose-500/50")}>
-                        {isNew ? <Leaf size={8} className="text-emerald-400" /> : <Rocket size={8} className="text-rose-400" />}
+
+                {/* Outer colored ring (bg shows through the gap) */}
+                <div className={cn(
+                    "rounded-sm p-[1px] inline-block",
+                    palette.bg
+                )}>
+                    {/* Inner neutral border + image container */}
+                    <div className="h-[60px] w-[60px] p-[1px] rounded-[2px] overflow-hidden bg-zinc-900 border border-zinc-800 shadow-sm">
+                        <Image
+                            src={token.imageUrl}
+                            alt={token.name || token.symbol}
+                            className="h-full w-full object-cover"
+                            width={60}
+                            height={60}
+                        />
                     </div>
                 </div>
-                <div className="mt-2 text-[10px] text-zinc-500 font-mono text-center truncate w-[52px]">
-                    {token.id.slice(0, 4)}...{token.id.slice(-4)}
+
+                {/* Status Indicator  */}
+                <div className="absolute bottom-2 -right-0.5">
+                    <div className={cn(
+                        "h-3.5 w-3.5 rounded-full flex items-center justify-center bg-black border-[1px]",
+                        palette.border
+                    )}>
+                        {isNew ? (
+                            <Leaf size={8} className="text-emerald-400" />
+                        ) : (
+                            <Rocket size={8} className="text-rose-400" />
+                        )}
+                    </div>
+                </div>
+
+
+                {/* ID label under image */}
+                <div className=" text-[10px] text-zinc-500 font-mono text-center truncate w-[60px]">
+                    {token.id?.slice(0, 4)}...{token.id?.slice(-4)}
                 </div>
             </div>
+
+
 
             {/* Center: Info & Badges */}
             <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
@@ -115,7 +185,7 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token }) => {
                 </div>
 
                 {/* Row 3: Quick Buy Button */}
-                <button className="flex items-center justify-center w-full gap-1 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold py-1 px-2 rounded-[4px] transition-colors shadow-[0_0_10px_rgba(37,99,235,0.2)]">
+                <button className="flex items-center   gap-1 bg-blue-600 hover:bg-blue-500 text-black text-[10px] font-bold py-1 px-2 rounded-2xl transition-colors shadow-[0_0_10px_rgba(37,99,235,0.2)]">
                     <Zap size={10} fill="currentColor" />
                     <span>0 SOL</span>
                 </button>

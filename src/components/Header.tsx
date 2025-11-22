@@ -13,14 +13,14 @@ export const Header: React.FC = () => {
                     <span className="hidden md:inline">AXIOM<span className="text-zinc-500 font-normal ml-1 text-sm">Pro</span></span>
                 </Link>
                 <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium text-zinc-400">
-                    <Link href="#" className="hover:text-white transition-colors">Discover</Link>
+                    <Link href="#" className="text-white hover:text-blue-400 hover:bg-blue-600/20 px-2 py-1 rounded transition-colors">Discover</Link>
                     <Link href="#" className="text-blue-400 ">Pulse</Link>
-                    <Link href="#" className="hover:text-white transition-colors">Trackers</Link>
-                    <Link href="#" className="hover:text-white transition-colors">Perpetuals</Link>
-                    <Link href="#" className="hover:text-white transition-colors">Yield</Link>
-                    <Link href="#" className="hover:text-white transition-colors">Vision</Link>
-                    <Link href="#" className="hover:text-white transition-colors">Portfolio</Link>
-                    <Link href="#" className="hover:text-white transition-colors">Rewards</Link>
+                    <Link href="#" className="text-white hover:text-blue-400 hover:bg-blue-600/20 px-2 py-1 rounded transition-colors">Trackers</Link>
+                    <Link href="#" className="text-white hover:text-blue-400 hover:bg-blue-600/20 px-2 py-1 rounded transition-colors">Perpetuals</Link>
+                    <Link href="#" className="text-white hover:text-blue-400 hover:bg-blue-600/20 px-2 py-1 rounded transition-colors">Yield</Link>
+                    <Link href="#" className="text-white hover:text-blue-400 hover:bg-blue-600/20 px-2 py-1 rounded transition-colors">Vision</Link>
+                    <Link href="#" className="text-white hover:text-blue-400 hover:bg-blue-600/20 px-2 py-1 rounded transition-colors">Portfolio</Link>
+                    <Link href="#" className="text-white hover:text-blue-400 hover:bg-blue-600/20 px-2 py-1 rounded transition-colors">Rewards</Link>
                 </nav>
             </div>
 
@@ -46,7 +46,7 @@ export const Header: React.FC = () => {
                     <span>SOL</span> <span><ChevronDown size={16} /></span>
                 </button>
 
-                <button className="hidden md:flex items-center gap-2 rounded-2xl bg-blue-600 px-4 py-1.5 text-sm font-bold text-white hover:bg-blue-500 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)]">
+                <button className="hidden md:flex items-center gap-2 rounded-2xl bg-blue-600 px-4 py-1.5 text-sm font-bold text-black hover:bg-blue-500 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)]">
                     Deposit
                 </button>
 
@@ -68,14 +68,9 @@ export const Header: React.FC = () => {
                     <button className="hidden md:block p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors">
                         <Settings size={18} />
                     </button>
-                    <button className="hidden md:flex items-center items-stretch gap-1 px-3 py-1.5 bg-zinc-900 border border-zinc-700 rounded-full text-xs text-white">
+                    <button className="hidden md:flex items-center items-stretch gap-1 px-3 py-1.5 bg-zinc-800 border border-zinc-700 rounded-full text-xs text-white">
                         {/* Placeholder wallet icon */}
                         <Wallet size={16} />
-                        <span>0</span>
-
-
-
-
 
                         {/* Placeholder token icon */}
                         <Image
@@ -86,14 +81,9 @@ export const Header: React.FC = () => {
                             className="ml-2 object-contain"
                         />
                         <span>0</span>
-
-
                         {/* Vertical Divider */}
                         <span className=" w-px bg-zinc-600 mx-1"></span>
                         <CircleDollarSign size={16} />
-
-
-
                         {/* Arrow */}
                         <ChevronDown size={16} />
                     </button>

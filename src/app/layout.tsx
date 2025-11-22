@@ -5,6 +5,7 @@ import { Providers } from '@/providers/Providers';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { MobileNav } from '@/components/ui/MobileNav';
+import HeaderStrip from '@/components/HeaderStrip';
 
 // Optional: import project metadata from metadata.json if present at project root
 // (You can copy /mnt/data/metadata.json to ./metadata.json in project root and uncomment below)
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
             {/* main content area — PulseBoard will be rendered via app/page.tsx */}
             <main className="flex-1 min-h-0 w-full relative">
+              <HeaderStrip />
               {children}
             </main>
 

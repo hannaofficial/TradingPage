@@ -1,3 +1,4 @@
+//components/ui/skeleton.tsx
 import React from "react";
 import { cn } from "@/utils/utils";
 
