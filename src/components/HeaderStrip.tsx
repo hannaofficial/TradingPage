@@ -5,7 +5,7 @@ import { Star, Settings, ChartLine } from 'lucide-react';
 
 export default function HeaderStrip() {
     return (
-        <div className="w-full border-b border-zinc-900">
+        <div className="hidden md:flex w-full border-b border-zinc-900">
 
             <div className="w-full md:px-7">
                 <div className="flex items-center divide-x divide-zinc-800">
