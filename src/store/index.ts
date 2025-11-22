@@ -7,6 +7,10 @@ interface PulseState {
     isLive: boolean;
 }
 
+interface DisplaySettings {
+    metricSize: 'small' | 'large';
+}
+
 const NAMES = ['BARRON', 'JailLawrence', 'VictimA', 'MOON2', 'Pumpdrop', 'MTXMAX', 'chimp', 'Tesla AI', 'MetaMask', 'Jem', 'T2GAI', 'NICHE', 'NVIDIA', 'LIFE'];
 const SYMBOLS = ['Fed Chair', 'Reed', 'Vic', 'BOOTS', 'Pump', 'Multi-Tx', 'chimp', 'AI', 'MASK', 'Jem', 'GameAI', 'Memes', 'NVIDIA', 'Feels'];
 
@@ -95,12 +99,26 @@ const pulseSlice = createSlice({
     },
 });
 
+const displaySettingsSlice = createSlice({
+    name: 'displaySettings',
+    initialState: {
+        metricSize: 'small' as 'small' | 'large',
+    },
+    reducers: {
+        setMetricSize: (state, action: PayloadAction<'small' | 'large'>) => {
+            state.metricSize = action.payload;
+        },
+    },
+});
+
 export const { updatePrices, addToken } = pulseSlice.actions;
+export const { setMetricSize } = displaySettingsSlice.actions;
 
 // --- Store ---
 export const store = configureStore({
     reducer: {
         pulse: pulseSlice.reducer,
+        displaySettings: displaySettingsSlice.reducer,
     },
 });
 

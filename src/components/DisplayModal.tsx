@@ -4,6 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import { cn } from '@/utils/utils';
 import { Circle, CheckCircle2, Square, CheckSquare, Search, SunIcon } from 'lucide-react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '@/store';
+import { setMetricSize } from '@/store';
 
 interface DisplayModalProps {
     isOpen: boolean;
@@ -14,8 +17,9 @@ type TabType = 'Layout' | 'Metrics' | 'Row' | 'Extras';
 
 export const DisplayModal: React.FC<DisplayModalProps> = ({ isOpen, onClose }) => {
     const dragControls = useDragControls();
+    const dispatch = useDispatch();
+    const metricSize = useSelector((state: RootState) => state.displaySettings.metricSize);
     const [activeTab, setActiveTab] = useState<TabType>('Layout');
-    const [selectedMetric, setSelectedMetric] = useState<'small' | 'large'>('small');
     const [selectedQuickBuy, setSelectedQuickBuy] = useState<'small' | 'large' | 'mega' | 'ultra'>('small');
     const [showSearchBar, setShowSearchBar] = useState(true);
     const [noDecimals, setNoDecimals] = useState(false);
@@ -101,10 +105,10 @@ export const DisplayModal: React.FC<DisplayModalProps> = ({ isOpen, onClose }) =
                                 <span className="text-sm text-zinc-400 ">Metrics</span>
                                 <div className="grid grid-cols-2 gap-2 mt-2">
                                     <button
-                                        onClick={() => setSelectedMetric('small')}
+                                        onClick={() => dispatch(setMetricSize('small'))}
                                         className={cn(
                                             "p-4 rounded-xl border transition-all text-center",
-                                            selectedMetric === 'small'
+                                            metricSize === 'small'
                                                 ? "bg-zinc-800 border-zinc-700 text-white"
                                                 : "bg-zinc-900/50 border-zinc-800 text-zinc-500 hover:border-zinc-700"
                                         )}
@@ -113,10 +117,10 @@ export const DisplayModal: React.FC<DisplayModalProps> = ({ isOpen, onClose }) =
                                         <div className="text-xs text-zinc-500">Small</div>
                                     </button>
                                     <button
-                                        onClick={() => setSelectedMetric('large')}
+                                        onClick={() => dispatch(setMetricSize('large'))}
                                         className={cn(
                                             "p-4 rounded-xl border transition-all text-center",
-                                            selectedMetric === 'large'
+                                            metricSize === 'large'
                                                 ? "bg-zinc-800 border-zinc-700 text-white"
                                                 : "bg-zinc-900/50 border-zinc-800 text-zinc-500 hover:border-zinc-700"
                                         )}

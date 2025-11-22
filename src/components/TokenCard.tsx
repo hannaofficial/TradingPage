@@ -3,6 +3,8 @@ import { TokenData } from '@/types';
 import { formatCurrency, formatTimeAgo, cn } from '@/utils/utils';
 import { Shield, Globe, Search, Users, Rocket, Copy, Zap, Leaf, Lock, EyeOff, FlagOff, TouchpadOff, ShieldCheck, ChevronRight, DollarSign } from 'lucide-react';
 import Image from 'next/image';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 
 interface TokenCardProps {
     token: TokenData;
@@ -61,8 +63,10 @@ function stableHashToIndex(id: string, max: number) {
 //Token Card Function
 
 export const TokenCard: React.FC<TokenCardProps> = memo(({ token, conversionActive }) => {
+    const metricSize = useSelector((state: RootState) => state.displaySettings.metricSize);
     const palette = BORDER_PALETTES[pickIndex(token.id || token.symbol || 'default', BORDER_PALETTES.length)];
 
+    const isLarge = metricSize === 'large';
     const isNew = token.status === 'new';
     const isMigrated = token.status === 'migrated';
 
@@ -94,7 +98,8 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token, conversionActi
 
     return (
         <div className={cn(
-            "group relative flex gap-2 px-3 py-3 bg-transparent hover:bg-zinc-800/60 transition-colors duration-200 w-full overflow-hidden h-[100px]",
+            "group relative flex gap-2 px-3 py-3 bg-transparent hover:bg-zinc-800/60 transition-colors duration-200 w-full overflow-hidden",
+            isLarge ? "h-[130px]" : "h-[100px]",
             conversionActive && "bg-zinc-900/20" // Slight bg tint if active
         )}>
 
@@ -122,19 +127,22 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token, conversionActi
                     palette.bg
                 )}>
                     {/* Inner neutral border + image container */}
-                    <div className="h-[60px] w-[60px] p-px rounded-[2px] overflow-hidden bg-zinc-900 border border-zinc-800 shadow-sm">
+                    <div className={cn(
+                        "p-px rounded-[2px] overflow-hidden bg-zinc-900 border border-zinc-800 shadow-sm",
+                        isLarge ? "h-[80px] w-[80px]" : "h-[60px] w-[60px]"
+                    )}>
                         {!imgError ? (
                             <Image
                                 src={token.imageUrl}
                                 alt={token.name || token.symbol}
                                 className="h-full w-full object-cover"
-                                width={60}
-                                height={60}
+                                width={isLarge ? 80 : 60}
+                                height={isLarge ? 80 : 60}
                                 onError={() => setImgError(true)}
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center bg-zinc-800/50">
-                                <Icon size={24} className="text-zinc-500" />
+                                <Icon size={isLarge ? 32 : 24} className="text-zinc-500" />
                             </div>
                         )}
                     </div>
@@ -157,7 +165,10 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token, conversionActi
 
 
                 {/* ID label under image */}
-                <div className=" text-[10px] text-zinc-500 font-mono text-center truncate w-[60px]">
+                <div className={cn(
+                    "text-zinc-500 font-mono text-center truncate",
+                    isLarge ? "text-[11px] w-[80px]" : "text-[10px] w-[60px]"
+                )}>
                     {token.id?.slice(0, 4)}...{token.id?.slice(-4)}
                 </div>
             </div>
@@ -168,30 +179,46 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token, conversionActi
             <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                 {/* Row 1: Header */}
                 <div className="flex items-center gap-1.5 min-w-0">
-                    <h3 className="text-[15px] font-semibold text-zinc-100 truncate leading-none">{token.symbol}</h3>
-                    <span className="text-[13px] text-zinc-500 truncate leading-none">{token.name}</span>
-                    <Copy size={12} className="text-zinc-600 hover:text-zinc-400 cursor-pointer shrink-0" />
+                    <h3 className={cn(
+                        "font-semibold text-zinc-100 truncate leading-none",
+                        isLarge ? "text-[17px]" : "text-[15px]"
+                    )}>{token.symbol}</h3>
+                    <span className={cn(
+                        "text-zinc-500 truncate leading-none",
+                        isLarge ? "text-[15px]" : "text-[13px]"
+                    )}>{token.name}</span>
+                    <Copy size={isLarge ? 14 : 12} className="text-zinc-600 hover:text-zinc-400 cursor-pointer shrink-0" />
                 </div>
 
                 {/* Row 2: Age & Socials */}
                 <div className="flex items-center gap-2 text-zinc-500 min-w-0">
-                    <span className={cn("text-[11px] font-bold leading-none shrink-0", isNew ? "text-emerald-500" : "text-blue-400")}>
+                    <span className={cn(
+                        "font-bold leading-none shrink-0",
+                        isLarge ? "text-[13px]" : "text-[11px]",
+                        isNew ? "text-emerald-500" : "text-blue-400"
+                    )}>
                         {timeAgo}
                     </span>
                     <div className="flex items-center gap-1 shrink-0">
-                        {token.isSafe ? <Shield size={12} className="text-emerald-500" /> : <Lock size={12} />}
-                        <Globe size={12} className="hover:text-blue-400 cursor-pointer" />
-                        <Search size={12} className="hover:text-zinc-300 cursor-pointer" />
+                        {token.isSafe ? <Shield size={isLarge ? 14 : 12} className="text-emerald-500" /> : <Lock size={isLarge ? 14 : 12} />}
+                        <Globe size={isLarge ? 14 : 12} className="hover:text-blue-400 cursor-pointer" />
+                        <Search size={isLarge ? 14 : 12} className="hover:text-zinc-300 cursor-pointer" />
                     </div>
                     <div
-                        className="flex items-center gap-0.5 text-[11px] font-mono text-zinc-400 shrink-0 transition-all duration-300"
+                        className={cn(
+                            "flex items-center gap-0.5 font-mono text-zinc-400 shrink-0 transition-all duration-300",
+                            isLarge ? "text-[13px]" : "text-[11px]"
+                        )}
                         style={{ transform: `scale(${holderScale})`, transformOrigin: 'left center' }}
                     >
-                        <Users size={12} />
+                        <Users size={isLarge ? 14 : 12} />
                         <span>{token.holders}</span>
                     </div>
-                    <div className="flex items-center gap-0.5 text-[11px] font-mono text-amber-500/80 shrink-0">
-                        <span className="text-[10px]">👑</span>
+                    <div className={cn(
+                        "flex items-center gap-0.5 font-mono text-amber-500/80 shrink-0",
+                        isLarge ? "text-[13px]" : "text-[11px]"
+                    )}>
+                        <span className={isLarge ? "text-[12px]" : "text-[10px]"}>👑</span>
                         <span>{(token.top10Holders || 1).toFixed(0)}%</span>
                     </div>
                 </div>
@@ -208,16 +235,32 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token, conversionActi
             </div>
 
             {/* Right: Metrics */}
-            <div className="flex flex-col items-end justify-between w-[105px] shrink-0 ml-1 py-0.5 z-10">
+            <div className={cn(
+                "flex flex-col items-end justify-between shrink-0 ml-1 py-0.5 z-10",
+                isLarge ? "w-[120px]" : "w-[105px]"
+            )}>
                 {/* Row 1: MC & Vol */}
                 <div className="text-right w-full">
                     <div className="flex items-baseline justify-end gap-1">
-                        <span className="text-[10px] text-zinc-600 uppercase font-bold">V</span>
-                        <span className="text-[12px] font-medium text-zinc-300 tabular-nums">
+                        <span className={cn(
+                            "text-zinc-600 uppercase font-bold",
+                            isLarge ? "text-[11px]" : "text-[10px]"
+                        )}>V</span>
+                        <span className={cn(
+                            "font-medium text-zinc-300 tabular-nums",
+                            isLarge ? "text-[14px]" : "text-[12px]"
+                        )}>
                             {formatCurrency(token.volume)}
                         </span>
-                        <span className="text-[10px] text-zinc-600 uppercase font-bold ml-1">MC</span>
-                        <span className={cn("text-[12px] font-bold tabular-nums", isMigrated ? "text-blue-400" : "text-emerald-400")}>
+                        <span className={cn(
+                            "text-zinc-600 uppercase font-bold ml-1",
+                            isLarge ? "text-[11px]" : "text-[10px]"
+                        )}>MC</span>
+                        <span className={cn(
+                            "font-bold tabular-nums",
+                            isLarge ? "text-[14px]" : "text-[12px]",
+                            isMigrated ? "text-blue-400" : "text-emerald-400"
+                        )}>
                             {formatCurrency(token.marketCap)}
                         </span>
                     </div>
@@ -226,24 +269,36 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token, conversionActi
                 {/* Row 2: Liquidity & TX */}
                 <div className="w-full flex flex-col items-end gap-0.5">
                     <div className="flex items-center gap-1 justify-end w-full">
-                        <span className="text-[10px] text-zinc-500 font-mono">F</span>
+                        <span className={cn(
+                            "text-zinc-500 font-mono",
+                            isLarge ? "text-[11px]" : "text-[10px]"
+                        )}>F</span>
                         <span className="text-zinc-500 font-mono flex items-center">
                             {!solanaError ? (
                                 <Image
                                     src='/solana-logo.svg'
                                     alt="SOL"
-                                    className="w-3.5 h-3.5 object-contain"
-                                    width={14}
-                                    height={14}
+                                    className={cn("object-contain", isLarge ? "w-4 h-4" : "w-3.5 h-3.5")}
+                                    width={isLarge ? 16 : 14}
+                                    height={isLarge ? 16 : 14}
                                     onError={() => setSolanaError(true)}
                                 />
                             ) : (
-                                <DollarSign size={12} className="text-pink-400" fill="currentColor" />
+                                <DollarSign size={isLarge ? 14 : 12} className="text-pink-400" fill="currentColor" />
                             )}
                         </span>
-                        <span className="text-[11px] text-zinc-300 font-mono">0.0{Math.floor(Math.random() * 9)}</span>
-                        <span className="text-[10px] text-zinc-500 font-mono ml-1">TX</span>
-                        <span className="text-[11px] text-zinc-300 font-mono">{token.txCount}</span>
+                        <span className={cn(
+                            "text-zinc-300 font-mono",
+                            isLarge ? "text-[13px]" : "text-[11px]"
+                        )}>0.0{Math.floor(Math.random() * 9)}</span>
+                        <span className={cn(
+                            "text-zinc-500 font-mono ml-1",
+                            isLarge ? "text-[11px]" : "text-[10px]"
+                        )}>TX</span>
+                        <span className={cn(
+                            "text-zinc-300 font-mono",
+                            isLarge ? "text-[13px]" : "text-[11px]"
+                        )}>{token.txCount}</span>
                         <div className="w-8 h-0.5 bg-rose-500/50 rounded-full ml-1 overflow-hidden shrink-0">
                             <div className="h-full bg-emerald-500" style={{ width: `${Math.random() * 100}%` }}></div>
                         </div>
@@ -289,8 +344,11 @@ export const TokenCard: React.FC<TokenCardProps> = memo(({ token, conversionActi
                         </div>
                     </div>
                 ) : (
-                    <button className="flex items-center   gap-1 bg-blue-600 hover:bg-blue-500 text-black text-[11px] font-bold py-1 px-2 rounded-2xl transition-colors shadow-[0_0_10px_rgba(37,99,235,0.2)]">
-                        <Zap size={12} fill="currentColor" />
+                    <button className={cn(
+                        "flex items-center gap-1 bg-blue-600 hover:bg-blue-500 text-black font-bold rounded-2xl transition-colors shadow-[0_0_10px_rgba(37,99,235,0.2)]",
+                        isLarge ? "text-[13px] py-1.5 px-3" : "text-[11px] py-1 px-2"
+                    )}>
+                        <Zap size={isLarge ? 14 : 12} fill="currentColor" />
                         <span>0 SOL</span>
                     </button>
                 )}
